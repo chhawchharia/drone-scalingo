@@ -5,7 +5,8 @@ local test_pipeline_name = 'testing';
 local windows(os) = os == 'windows';
 
 local golang_image(os, version) =
-  'golang:' + '1.11' + if windows(os) then '-windowsservercore-' + version else '';
+  if windows(os) then 'golang:1.11-windowsservercore-' + version
+  else 'golang:1.26.10-alpine@sha256:27f2d3b83cfc5803c8078f8e730af0f7c431bf067afaec8f60a36fb763187cba';
 
 {
   test(os='linux', arch='amd64', version='')::
@@ -28,7 +29,7 @@ local golang_image(os, version) =
           environment: {
             GO111MODULE: 'on',
           },
-          commands: [
+          commands: (if is_windows then ['. ./scripts/setup-go-windows.ps1'] else []) + [
             'go vet ./...',
           ],
           volumes: volumes,
@@ -40,7 +41,7 @@ local golang_image(os, version) =
           environment: {
             GO111MODULE: 'on',
           },
-          commands: [
+          commands: (if is_windows then ['. ./scripts/setup-go-windows.ps1'] else []) + [
             'go test -cover ./...',
           ],
           volumes: volumes,
@@ -81,7 +82,7 @@ local golang_image(os, version) =
             CGO_ENABLED: '0',
             GO111MODULE: 'on',
           },
-          commands: [
+          commands: (if is_windows then ['. ./scripts/setup-go-windows.ps1'] else []) + [
             'go build -v -ldflags "-X main.version=${DRONE_COMMIT_SHA:0:8}" -a -tags netgo -o release/' + os + '/' + arch + '/' + name + extension,
           ],
           when: {
@@ -98,7 +99,7 @@ local golang_image(os, version) =
             CGO_ENABLED: '0',
             GO111MODULE: 'on',
           },
-          commands: [
+          commands: (if is_windows then ['. ./scripts/setup-go-windows.ps1'] else []) + [
             'go build -v -ldflags "-X main.version=${DRONE_TAG##v}" -a -tags netgo -o release/' + os + '/' + arch + '/' + name + extension,
           ],
           when: {
@@ -118,6 +119,8 @@ local golang_image(os, version) =
           image: 'plugins/docker:' + tag,
           pull: 'always',
           settings: {
+            pull_image: true,
+            no_cache: true,
             dry_run: true,
             tags: tag,
             dockerfile: 'docker/Dockerfile.' + file_suffix,
@@ -136,6 +139,8 @@ local golang_image(os, version) =
           image: 'plugins/docker:' + tag,
           pull: 'always',
           settings: {
+            pull_image: true,
+            no_cache: true,
             auto_tag: true,
             auto_tag_suffix: tag,
             daemon_off: if is_windows then 'true' else 'false',

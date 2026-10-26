@@ -5,12 +5,8 @@ go 1.26.10
 require (
 	github.com/appleboy/drone-git-push v0.0.0-20160731161430-e2e936331fff
 	github.com/drone/drone-go v0.0.0-20160502151758-eaa41f7836a1
-)
-
-require (
-	github.com/golang/protobuf v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20181017193950-04a2e542c03f // indirect
-	golang.org/x/oauth2 v0.0.0-20181017192945-9dcd33a902f4 // indirect
-	golang.org/x/sync v0.24.0 // indirect
-	google.golang.org/appengine v1.2.0 // indirect
+	github.com/golang/protobuf v1.2.0
+	golang.org/x/net v0.0.0-20181017193950-04a2e542c03f
+	golang.org/x/oauth2 v0.0.0-20181017192945-9dcd33a902f4
+	google.golang.org/appengine v1.2.0
 )
