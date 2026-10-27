@@ -1,7 +1,5 @@
 module github.com/drone-plugins/drone-scalingo
 
-go 1.26.10
-
 require (
 	github.com/appleboy/drone-git-push v0.0.0-20160731161430-e2e936331fff
 	github.com/drone/drone-go v0.0.0-20160502151758-eaa41f7836a1
